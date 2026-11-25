@@ -1,0 +1,27 @@
+NOTICE
+======
+
+Voice — https://github.com/drsamonline/app-voice
+Copyright 2026 Dr Sohil Momin. Licensed under PolyForm Noncommercial 1.0.0 (see LICENSE).
+
+Third-party components
+----------------------
+
+None. Voice has no third-party dependency and no CDN.
+
+Vendored from this project's own kits (same licence, same author), copied verbatim on
+25/11/2026:
+
+- web-kit 0.1.0 — docs/play/web-kit.js — the offline shell, storage helpers and PWA registration
+- export-kit 1.0.0 — docs/play/export-kit.js — Blob download, used to write the memoir and save a clip
+
+Neither kit is modified. Neither makes a network request.
+
+On transcription and models
+---------------------------
+
+The Griot prompt asks for on-device speech-to-text and a bring-your-own-key LLM; the Mimic prompt
+asks for an LLM that writes in your voice. There is no speech model and no language model in this
+app: the recording is kept and played while the words are typed, the questions are a bundled bank,
+and a draft is written by measured rules. The voice card's numbers are computed from the samples
+the person supplied, and nothing about a voice is asserted that was not measured from them.

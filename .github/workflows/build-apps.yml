@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# Calls the reusable build pipeline in drsamonline/app-builder: EXE + APK + Linux,
+# attached to the rolling release `app-latest`. Do NOT copy the workflow body here.
+# Pinned to the canonical SHA in forge/canonical-pins.json, not @main (@main answers
+# startup_failure). deploy_path is empty: Pages already serves docs/ from main.
+name: Build + deploy
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "/*.md"
+      - "/LICENSE"
+      - "/NOTICE"
+      - "/CHANGELOG.md"
+      - "/.gitignore"
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: build
+  cancel-in-progress: true
+
+jobs:
+  app:
+    uses: drsamonline/app-builder/.github/workflows/build.yml@bbef0db943e11f1a280ac8a063b79e66b7f6d9db
+    with:
+      app_name: app-voice
+      app_src: docs/play
+      deploy_path: ""
+    permissions:
+      contents: write
+      pages: write
+      id-token: write

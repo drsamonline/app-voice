@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Self-tests (every must-not, and the done-means)
+        run: node tests/self-tests.js
+      - name: Page smoke (every script src resolves)
+        run: node tests/page-smoke.js
+      - name: UI tests (the page is wired to the engine)
+        run: npm install --no-save jsdom && node tests/ui-tests.js

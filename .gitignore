@@ -1,0 +1,15 @@
+node_modules/
+dist/
+build/
+exe/dist/
+exe/build/
+*.apk
+*.aab
+*.exe
+keystore/
+*.jks
+*.keystore
+*.log
+.DS_Store
+__pycache__/
+.venv/
