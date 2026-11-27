@@ -105,8 +105,8 @@
     els.interviewEmpty.hidden = true;
     els.compile.hidden = false;
     renderQuestion();
-    persist();
-    setStatus("ok", out.says);
+    var saved = persist();
+    if (saved) setStatus("ok", out.says);
   }
 
   function renderQuestion() {
@@ -155,8 +155,8 @@
     els.recNote.textContent = "";
     renderAnswers();
     renderQuestion();
-    persist();
-    setStatus("ok", out.says);
+    var saved = persist();
+    if (saved) setStatus("ok", out.says);
   }
 
   function skipQuestion() {
@@ -164,8 +164,8 @@
     state.session.cursor = Math.min(state.session.cursor + 1, V.allQuestions().length);
     els.words.value = "";
     renderQuestion();
-    persist();
-    setStatus("ok", "Skipped. The bank moves on; nothing was filed for that question.");
+    var saved = persist();
+    if (saved) setStatus("ok", "Skipped. The bank moves on; nothing was filed for that question.");
   }
 
   function renderAnswers() {
@@ -290,8 +290,8 @@
     els.mSentence.textContent = out.card.avgSentence;
     els.mFormality.textContent = out.card.formality + "/100";
     els.mSize.textContent = out.card.samples + " / " + out.card.sampleWords;
-    persist();
-    setStatus("ok", "Card derived. " + out.card.says);
+    var saved = persist();
+    if (saved) setStatus("ok", "Card derived. " + out.card.says);
   }
 
   function makeDraft() {
