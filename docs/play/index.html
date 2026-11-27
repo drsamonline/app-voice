@@ -68,6 +68,32 @@
   .sponsor{margin:24px 0 0;padding:12px 14px;border:1px solid rgba(128,128,128,.35);border-left:3px solid #c9a05a;
            background:rgba(128,128,128,.07);border-radius:8px;font-size:12.5px;line-height:1.6}
   .sponsor a{color:#c9a05a;text-decoration:none;border-bottom:1px solid currentColor}
+
+  /* ---- the app is designed for the screen it is on, not for a phone in a wide window ---- */
+  :root{
+    --s0:clamp(11px,.4vw + 10px,12.5px);
+    --s1:clamp(14px,.55vw + 12px,16.5px);
+    --s2:clamp(17px,1.1vw + 13px,22px);
+    --display:clamp(20px,1.6vw + 14px,28px);
+    --gut:clamp(14px,2.4vw,40px);
+  }
+  body{font-size:var(--s1)}
+  main{max-width:1400px !important;width:100%;padding-left:var(--gut);padding-right:var(--gut);margin:0 auto}
+  header.top{max-width:none}
+  header.top h1{font-size:var(--display)}
+  h2{font-size:var(--s2)}
+  p,li,label,td,th,input,textarea,select,button{font-size:var(--s1)}
+  .card h2{font-size:var(--s0)}
+  /* stacked cards become columns as the screen grows, so a laptop is not a tall phone */
+  @media (min-width:1000px){
+    main > .card, main > section.card{display:block}
+    main{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,1.6vw,22px);align-items:start}
+    main > .card:only-of-type, main > section.card:only-of-type{grid-column:1 / -1}
+    main > .status, main > footer{grid-column:1 / -1}
+  }
+  @media (min-width:1440px){
+    main{grid-template-columns:repeat(3,minmax(0,1fr))}
+  }
 </style>
 </head>
 <body>
