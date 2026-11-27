@@ -27,6 +27,9 @@ function build(opts) {
   var w = dom.window, saved = [];
   w.URL.createObjectURL = function () { return "blob:x"; }; w.URL.revokeObjectURL = function () {};
   w.HTMLAnchorElement.prototype.click = function () {};
+  w.prompt = function () { return "x"; };
+  w.confirm = function () { return true; };
+  w.alert = function () {};
   w.HTMLCanvasElement.prototype.getContext = function () {
     return { clearRect: function () {}, beginPath: function () {}, moveTo: function () {}, lineTo: function () {}, stroke: function () {},
       fillRect: function () {}, fill: function () {}, arc: function () {}, closePath: function () {}, save: function () {}, restore: function () {},
@@ -44,13 +47,25 @@ function build(opts) {
       removeItem: function () {}, clear: function () {}
     };
   } });
-  ["web-kit.js", "export-kit.js"].forEach(function (f) {
-    var p = path.join(PLAY, f); if (fs.existsSync(p)) w.eval(fs.readFileSync(p, "utf8"));
+  /* every script the page loads except app.js itself and the service worker, kits first: an app whose core
+   * depends on a vendored kit (srs-kit, crypto-kit) must have the kit evaluated before the core */
+  var scripts = fs.readdirSync(PLAY).filter(function (f) {
+    return /\.js$/.test(f) && f !== "app.js" && f !== "sw.js";
+  }).sort(function (a, b) {
+    var ka = /-kit\.js$/.test(a) ? 0 : 1, kb = /-kit\.js$/.test(b) ? 0 : 1;
+    return ka - kb || a.localeCompare(b);
   });
-  var core = fs.readdirSync(PLAY).filter(function (f) { return /-core\.js$/.test(f); })[0];
-  if (core) w.eval(fs.readFileSync(path.join(PLAY, core), "utf8"));
+  scripts.forEach(function (f) { w.eval(fs.readFileSync(path.join(PLAY, f), "utf8")); });
   w.eval(fs.readFileSync(path.join(PLAY, "app.js"), "utf8"));
   return { dom: dom, w: w, d: w.document, saved: saved };
+}
+
+/* an app may need a seed to reach its saving buttons at all (a pasted page, a deck). If tests/failed-save-
+ * seed.js exists it is called with the window and document; it is not a fake save, just the state a person
+ * would be in before pressing the button. */
+function seed(d, w) {
+  var f = path.join(__dirname, "failed-save-seed.js");
+  if (fs.existsSync(f)) require(f)(d, w);
 }
 
 /* fill anything the handlers will want, so a click reaches the save rather than the validation */
@@ -69,7 +84,7 @@ function statusOf(d) {
 
 /* PASS 1: which buttons cause a write? */
 var probe = build({ throwing: false });
-prime(probe.d);
+prime(probe.d); seed(probe.d, probe.w);
 var buttons = Array.prototype.slice.call(probe.d.querySelectorAll("button"));
 var saving = [];
 buttons.forEach(function (b, i) {
@@ -84,7 +99,7 @@ ok("at least one saving action was found", saving.length > 0, saving.length + " 
 /* PASS 2: every one of them, with storage throwing */
 saving.forEach(function (s) {
   var run = build({ throwing: true });
-  prime(run.d);
+  prime(run.d); seed(run.d, run.w);
   var list = Array.prototype.slice.call(run.d.querySelectorAll("button"));
   /* replay the clicks up to and including the target: with storage broken the earlier steps still set state
    * in memory, which is exactly the situation a person would be in */
