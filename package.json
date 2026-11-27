@@ -6,7 +6,7 @@
   "license": "PolyForm-Noncommercial-1.0.0",
   "author": "Dr Sohil Momin",
   "scripts": {
-    "test": "node tests/self-tests.js && node tests/page-smoke.js && node tests/ui-tests.js && node tests/failed-save.js",
+    "test": "node tests/self-tests.js && node tests/page-smoke.js && node tests/ui-tests.js && node tests/failed-save.js && node tests/page-render.js",
     "test:engine": "node tests/self-tests.js",
     "test:shape": "node tests/page-smoke.js",
     "test:ui": "node tests/ui-tests.js",
